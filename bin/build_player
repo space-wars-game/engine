@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+email=$1
+
+cp -f "match/players/$1/ai.cpp" match/build/. && \
+cd match/build && cmake ../.. > /dev/null && make player > /dev/null && \
+cp -f player "../players/$1/."
