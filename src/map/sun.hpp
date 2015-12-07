@@ -10,9 +10,10 @@ class Sun {
     G
   };
 
-  Sun(TYPE type, unsigned int radius);
+  static unsigned int MIN_RADIUS;
+  static unsigned int MAX_RADIUS;
 
-  void PrintJSON(std::ostream& stream) const;
+  Sun(TYPE type, unsigned int radius);
 
   TYPE type;
   unsigned int radius;

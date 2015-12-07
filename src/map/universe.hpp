@@ -1,7 +1,8 @@
 #pragma once
 
 #include <mmpg/world.hpp>
-#include "solar_system.hpp"
+#include "planetary_system.hpp"
+#include "json_serializer.hpp"
 
 namespace space_wars {
 
@@ -9,6 +10,7 @@ class Universe : public mmpg::World {
  public:
   Universe();
 
+  void Generate(int seed);
   void Read(std::istream& stream);
   void Update(int player, const mmpg::Action& action);
   void Print(std::ostream& stream);
@@ -18,12 +20,15 @@ class Universe : public mmpg::World {
   mmpg::Action* ParseAction(std::istream& data);
 
  private:
+  JSONSerializer json_serializer_;
+
+ public:
   struct Ship {
     float x, y;
   };
 
-  std::vector<Ship*> ships_;
-  SolarSystem solar_system_;
+  std::vector<Ship*> ships;
+  PlanetarySystem* planetary_system;
 };
 
 }

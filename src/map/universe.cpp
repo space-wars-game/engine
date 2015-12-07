@@ -1,10 +1,11 @@
 #include "universe.hpp"
 #include "../action/move.hpp"
+#include "universe_generator.hpp"
 
 namespace space_wars {
 
 
-Universe::Universe() : solar_system_(time(NULL)) {
+Universe::Universe() {
 
 }
 
@@ -20,7 +21,7 @@ void Universe::Read(std::istream& stream) {
         ship->x = x;
         ship->y = y;
 
-        ships_.push_back(ship);
+        ships.push_back(ship);
       }
     }
   }
@@ -33,16 +34,16 @@ void Universe::Update(int player, const mmpg::Action& action) {
 
     switch(move.direction()) {
       case 'U':
-        ships_[player]->y += 0.1f;
+        ships[player]->y += 0.1f;
         break;
       case 'D':
-        ships_[player]->y -= 0.1f;
+        ships[player]->y -= 0.1f;
         break;
       case 'L':
-        ships_[player]->x -= 0.1f;
+        ships[player]->x -= 0.1f;
         break;
       case 'R':
-        ships_[player]->x += 0.1f;
+        ships[player]->x += 0.1f;
         break;
     }
   }
@@ -51,24 +52,14 @@ void Universe::Update(int player, const mmpg::Action& action) {
 void Universe::Print(std::ostream& stream) {
   stream << "PLAYERS" << std::endl;
 
-  for(Ship* ship : ships_) {
+  for(Ship* ship : ships) {
     stream << ship->x << ' ' << ship->y << std::endl;
   }
 }
 
 
 void Universe::PrintJSON(std::ostream& stream) {
-  stream << "{\"players\":[";
-
-  for(Ship* ship : ships_) {
-    stream << "{\"x\":" << ship->x << ",\"y\":" << ship->y << "}";
-  }
-
-  stream << "],\"sun\":";
-
-  solar_system_.sun->PrintJSON(stream);
-
-  stream << "}";
+  json_serializer_.Serialize(*this, stream);
 }
 
 mmpg::Action* Universe::ParseAction(std::istream& data) {
@@ -86,6 +77,11 @@ mmpg::Action* Universe::ParseAction(std::istream& data) {
     default:
       return 0;
   }
+}
+
+void Universe::Generate(int seed) {
+  UniverseGenerator generator(seed);
+  generator.Generate(*this);
 }
 
 }
