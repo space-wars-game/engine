@@ -1,6 +1,6 @@
 #pragma once
 
-#include "action.hpp"
+#include <mmpg/action.hpp>
 
 namespace space_wars {
 

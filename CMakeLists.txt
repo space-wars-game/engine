@@ -11,7 +11,7 @@ set(SOURCE_FILES
 add_subdirectory(lib/engine)
 
 include_directories(
-        src
+        include/space_wars
         ${MMPG_INCLUDE_DIRS}
 )
 

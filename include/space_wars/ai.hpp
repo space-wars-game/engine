@@ -1,6 +1,6 @@
 #pragma once
 
-#include <player/ai.hpp>
+#include <mmpg/player/ai.hpp>
 
 namespace space_wars {
 

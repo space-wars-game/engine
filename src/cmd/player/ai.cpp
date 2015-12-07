@@ -1,4 +1,4 @@
-#include "ai.hpp"
+#include <ai.hpp>
 #include "../../action/move.hpp"
 
 namespace space_wars {

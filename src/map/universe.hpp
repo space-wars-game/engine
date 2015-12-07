@@ -1,6 +1,6 @@
 #pragma once
 
-#include <world.hpp>
+#include <mmpg/world.hpp>
 #include "solar_system.hpp"
 
 namespace space_wars {

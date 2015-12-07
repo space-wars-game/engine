@@ -1,4 +1,4 @@
-#include <master/process.hpp>
+#include <mmpg/master/process.hpp>
 #include "../../map/universe.hpp"
 
 using namespace space_wars;

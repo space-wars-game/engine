@@ -1,5 +1,5 @@
-#include <player/process.hpp>
-#include "map/universe.hpp"
+#include <mmpg/player/process.hpp>
+#include "../../map/universe.hpp"
 
 using namespace space_wars;
 
