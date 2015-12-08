@@ -15,6 +15,8 @@ class UniverseGenerator {
  private:
   int seed_;
   std::mt19937 random_;
+
+  void seed(const std::vector<int>& seeds);
 };
 
 }
