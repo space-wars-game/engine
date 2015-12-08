@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 set(SOURCE_FILES
         src/map/universe.cpp
         src/map/universe.hpp
-        src/map/planetary_system.cpp
+        src/map/system.cpp
         src/map/sun.cpp
         src/map/universe_generator.cpp
         src/map/json_serializer.cpp

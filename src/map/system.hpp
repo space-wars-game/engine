@@ -4,9 +4,9 @@
 
 namespace space_wars {
 
-class PlanetarySystem {
+class System {
  public:
-  PlanetarySystem();
+  System();
 
   Sun* sun;
 };

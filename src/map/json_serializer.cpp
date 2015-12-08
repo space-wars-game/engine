@@ -16,12 +16,12 @@ void JSONSerializer::Serialize(const Universe& universe, std::ostream& stream) {
 
   stream << "],";
 
-  Serialize(*universe.planetary_system, stream);
+  Serialize(*universe.system, stream);
 
   stream << "}";
 }
 
-void JSONSerializer::Serialize(const PlanetarySystem& system, std::ostream& stream) {
+void JSONSerializer::Serialize(const System& system, std::ostream& stream) {
   stream << "\"sun\":{";
   stream << "\"type\":\"G\",\"radius\":" << system.sun->radius;
   stream << "}";

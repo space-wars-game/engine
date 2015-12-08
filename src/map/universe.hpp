@@ -1,7 +1,7 @@
 #pragma once
 
 #include <mmpg/world.hpp>
-#include "planetary_system.hpp"
+#include "system.hpp"
 #include "json_serializer.hpp"
 
 namespace space_wars {
@@ -28,7 +28,7 @@ class Universe : public mmpg::World {
   };
 
   std::vector<Ship*> ships;
-  PlanetarySystem* planetary_system;
+  System* system;
 };
 
 }

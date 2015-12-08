@@ -1,6 +1,6 @@
 #pragma once
 
-#include "planetary_system.hpp"
+#include "system.hpp"
 
 namespace space_wars {
 
@@ -11,7 +11,7 @@ class JSONSerializer {
   JSONSerializer();
 
   void Serialize(const Universe& universe, std::ostream& stream);
-  void Serialize(const PlanetarySystem& system, std::ostream& stream);
+  void Serialize(const System& system, std::ostream& stream);
 };
 
 }
