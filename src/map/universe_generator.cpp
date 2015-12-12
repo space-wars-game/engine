@@ -1,11 +1,15 @@
-#include <iostream>
 #include "universe_generator.hpp"
+#include <iostream>
+#include <queue>
 
 namespace space_wars {
 
 namespace {
 
-enum SeedTypes { SYSTEM, SUN, PLANET, TYPE, RADIUS, SIZE, X, Y, DISTANCE_X, DISTANCE_Y, ORBIT_POSITION };
+enum SeedTypes {
+  SYSTEM, SUN, PLANET, TYPE, RADIUS, SIZE, X, Y, DISTANCE_X, DISTANCE_Y, ORBIT_POSITION, RELAY,
+  CONNECTION
+};
 
 }
 
@@ -43,6 +47,8 @@ std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, Sun* sun) {
     planets.push_back(GeneratePlanet(system, (int)i, i == 0 ? (CelestialBody*)sun : (CelestialBody*)planets[i-1]));
   }
 
+  ConnectPlanets(system, planets);
+
   return planets;
 }
 
@@ -62,6 +68,45 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
   return new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
 }
 
+void UniverseGenerator::ConnectPlanets(int system, std::vector<Planet*>& planets) {
+  // Unconnected planets
+  std::vector<Planet*> unconnected(planets);
+
+  // Connected
+  std::queue<Planet*> connected;
+
+  // TODO: Add relays
+  seed({SYSTEM, system, RELAY});
+  int relay_position = in_range(0, unconnected.size());
+
+  connected.push(unconnected[relay_position]);
+  unconnected.erase(unconnected.begin() + relay_position);
+
+  seed({SYSTEM, system, CONNECTION});
+
+  while(!unconnected.empty()) {
+    // Get the first connected edge
+    Planet* edge = connected.front();
+    connected.pop();
+
+    // Choose how many planets to connect to this edge
+    int num_planets = in_range(Planet::MIN_NUM_CONNECTIONS, std::min(Planet::MAX_NUM_CONNECTIONS, (unsigned int) unconnected.size()));
+
+    // Connect num_planets choosing randomly
+    for(int i = 0; i < num_planets; ++i) {
+      int p = in_range(0, unconnected.size());
+
+      Planet* connection = unconnected[p];
+
+      edge->connections.push_back(unconnected[p]);
+      connection->connections.push_back(edge);
+
+      connected.push(connection);
+      unconnected.erase(unconnected.begin() + p);
+    }
+  }
+}
+
 void UniverseGenerator::seed(const std::vector<int>& elements) {
   std::vector<int> seeds;
 
@@ -73,7 +118,13 @@ void UniverseGenerator::seed(const std::vector<int>& elements) {
 }
 
 unsigned int UniverseGenerator::in_range(unsigned int min, unsigned int max) {
-  return (unsigned int)(min + random_() % (max - min));
+  unsigned int diff = max - min;
+
+  if(diff == 0) {
+    return min;
+  }
+
+  return (unsigned int)(min + random_() % diff);
 }
 
 }

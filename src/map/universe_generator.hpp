@@ -16,6 +16,8 @@ class UniverseGenerator {
   std::vector<Planet*> GeneratePlanets(int system, Sun* sun);
   Planet* GeneratePlanet(int system, int id, CelestialBody* previous);
 
+  void ConnectPlanets(int system, std::vector<Planet*>& planets);
+
  private:
   int seed_;
   std::mt19937 random_;
