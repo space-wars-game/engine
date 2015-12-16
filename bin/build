@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
+rm -rf build
 mkdir build
-mkdir match
-mkdir match/build
+
+mkdir -p match/build
 touch match/build/ai.cpp
 
 cd build && cmake .. && make master
