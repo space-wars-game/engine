@@ -13,9 +13,7 @@ JSONSerializer::JSONSerializer() {
 void JSONSerializer::Serialize(const Universe& universe, std::ostream& stream) {
   stream << "{" << ATTR(players) << ":[";
 
-  for(const Universe::Ship* ship : universe.ships) {
-    stream << "{" << ATTR(x) << ":" << ship->x << "," << ATTR(y) << ":" << ship->y << "}";
-  }
+  // TODO: Serialize player data
 
   stream << "],";
 
