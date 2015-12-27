@@ -15,7 +15,7 @@ std::string Move::str() const {
 }
 
 void Move::PrintJSON(std::ostream& stream) const {
-  stream << "{ \"type\": \"move\", \"direction\":\"" << direction_ << "\"}";
+  stream << "{\"type\":\"move\",\"direction\":\"" << direction_ << "\"}";
 }
 
 void Move::perform(int player_id, Universe& universe) const {
