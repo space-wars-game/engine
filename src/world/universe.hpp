@@ -10,6 +10,8 @@ class Universe : public mmpg::World {
  public:
   Universe();
 
+  void Update(float delta);
+
   void Print(std::ostream& stream);
   void PrintJSON(std::ostream& stream);
 

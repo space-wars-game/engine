@@ -7,6 +7,10 @@ Universe::Universe() {
 
 }
 
+void Universe::Update(float delta) {
+  // TODO: Update logic
+}
+
 void Universe::Print(std::ostream& stream) {
   // TODO: Normal serializer
   (void)stream;
