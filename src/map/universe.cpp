@@ -1,6 +1,5 @@
 #include "universe.hpp"
 #include "../action/move.hpp"
-#include "universe_generator.hpp"
 
 namespace space_wars {
 
@@ -60,28 +59,6 @@ void Universe::Print(std::ostream& stream) {
 
 void Universe::PrintJSON(std::ostream& stream) {
   json_serializer_.Serialize(*this, stream);
-}
-
-mmpg::Action* Universe::ParseAction(std::istream& data) {
-  char t;
-
-  data >> t;
-
-  switch(t) {
-    case 'U':
-    case 'D':
-    case 'L':
-    case 'R':
-      return new Move(t);
-
-    default:
-      return 0;
-  }
-}
-
-void Universe::Generate(int seed) {
-  UniverseGenerator generator(seed);
-  generator.Generate(*this);
 }
 
 }

@@ -16,9 +16,6 @@ class Universe : public mmpg::World {
   void Print(std::ostream& stream);
   void PrintJSON(std::ostream& stream);
 
-  // TODO: Move this logic
-  mmpg::Action* ParseAction(std::istream& data);
-
  private:
   JSONSerializer json_serializer_;
 

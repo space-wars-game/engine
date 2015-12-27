@@ -1,13 +1,14 @@
 #include <mmpg/player/process.hpp>
-#include "../../map/universe.hpp"
+#include "../../space_wars.hpp"
 
 using namespace space_wars;
 
 int main(int argc, char* argv[]) {
-  mmpg::player::Process player(argc, argv);
 
-  Universe universe;
-  player.Run(universe);
+  SpaceWars space_wars;
+
+  mmpg::player::Process player(argc, argv);
+  player.Run(space_wars);
 
   return 0;
 }

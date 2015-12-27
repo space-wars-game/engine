@@ -17,8 +17,11 @@ UniverseGenerator::UniverseGenerator(int seed) : seed_(seed) {
 
 }
 
-void UniverseGenerator::Generate(Universe& universe) {
-  universe.system = GenerateSystem(0);
+Universe* UniverseGenerator::Generate() {
+  Universe* universe = new Universe;
+  universe->system = GenerateSystem(0);
+
+  return universe;
 }
 
 System* UniverseGenerator::GenerateSystem(int id) {
