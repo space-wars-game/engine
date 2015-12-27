@@ -8,6 +8,7 @@ Universe::Universe() {
 }
 
 void Universe::Update(float delta) {
+  (void) delta;
   // TODO: Update logic
 }
 
