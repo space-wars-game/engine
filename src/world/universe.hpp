@@ -10,7 +10,6 @@ class Universe : public mmpg::World {
  public:
   Universe();
 
-  void Update(int player, const mmpg::Action& action);
   void Print(std::ostream& stream);
   void PrintJSON(std::ostream& stream);
 

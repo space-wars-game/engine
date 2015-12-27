@@ -1,20 +1,21 @@
 #pragma once
 
-#include <mmpg/action.hpp>
+
+#include "../action.hpp"
 
 namespace space_wars {
 
-class Move : public mmpg::Action {
+class Move : public Action {
  public:
-  typedef mmpg::Action super;
-
   Move(char direction);
 
   char direction() const;
   std::string str() const;
 
+  void PrintJSON(std::ostream& stream) const;
+
  protected:
-  void end_json(std::ostream& stream) const;
+  void perform(int player_id, Universe& universe) const;
 
  private:
   char direction_;

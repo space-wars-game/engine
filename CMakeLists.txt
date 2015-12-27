@@ -6,6 +6,9 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra")
 set(SOURCE_FILES
         src/space_wars.cpp
 
+        src/action.cpp
+        src/action/move.cpp
+
         src/world/universe.cpp
         src/world/universe.hpp
         src/world/celestial_body.cpp
@@ -16,7 +19,6 @@ set(SOURCE_FILES
 
         src/world/universe_generator.cpp
         src/world/json_serializer.cpp
-        src/action/move.cpp
 )
 
 add_subdirectory(lib/engine)

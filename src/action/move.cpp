@@ -2,12 +2,8 @@
 
 namespace space_wars {
 
-Move::Move(char direction) : super("move"), direction_(direction) {
+Move::Move(char direction) : direction_(direction) {
 
-}
-
-void Move::end_json(std::ostream& stream) const {
-  stream << ",\"direction\":\"" << direction_ << "\"}";
 }
 
 char Move::direction() const {
@@ -16,6 +12,17 @@ char Move::direction() const {
 
 std::string Move::str() const {
   return std::string(1, direction_);
+}
+
+void Move::PrintJSON(std::ostream& stream) const {
+  stream << "{ \"type\": \"move\", \"direction\":\"" << direction_ << "\"}";
+}
+
+void Move::perform(int player_id, Universe& universe) const {
+  (void)player_id;
+  (void)universe;
+
+  // Do nothing, as this is a test action
 }
 
 }

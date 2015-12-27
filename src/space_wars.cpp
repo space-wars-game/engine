@@ -1,7 +1,6 @@
 #include <iostream>
 #include "space_wars.hpp"
 #include "action/move.hpp"
-#include "world/universe.hpp"
 #include "world/universe_generator.hpp"
 
 namespace space_wars {

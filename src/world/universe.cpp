@@ -7,12 +7,6 @@ Universe::Universe() {
 
 }
 
-void Universe::Update(int player, const mmpg::Action& action) {
-  (void)player;
-  (void)action;
-  // TODO: Update logic
-}
-
 void Universe::Print(std::ostream& stream) {
   // TODO: Normal serializer
   (void)stream;
