@@ -10,4 +10,8 @@ System::System() {
 
 }
 
+void System::Conquer(unsigned int planet_id, unsigned int player_id) {
+  planets[planet_id]->owner = player_id;
+}
+
 }

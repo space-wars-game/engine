@@ -54,6 +54,8 @@ void JSONSerializer::Serialize(const std::vector<Planet*>& planets, std::ostream
     stream << ATTR(id) << ":" << planet.id << ",";
     stream << ATTR(x) << ":" << planet.x << "," << ATTR(y) << ":" << planet.y << ",";
     stream << ATTR(radius) << ":" << planet.radius << ",";
+    stream << ATTR(owner) << ":" << planet.owner << ",";
+    stream << ATTR(ships) << ":" << planet.ships << ",";
 
     stream << ATTR(connections) << ":[";
 

@@ -8,8 +8,9 @@ Universe::Universe() {
 }
 
 void Universe::Update(float delta) {
-  (void) delta;
-  // TODO: Update logic
+  for(Planet* planet : system->planets) {
+    planet->GenerateShips(delta);
+  }
 }
 
 void Universe::Print(std::ostream& stream) {

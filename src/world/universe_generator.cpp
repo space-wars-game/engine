@@ -30,6 +30,10 @@ System* UniverseGenerator::GenerateSystem(int id) {
   system->sun = GenerateSun(id);
   system->planets = GeneratePlanets(id, system->sun);
 
+  // TODO: Generate home systems
+  unsigned int owned_id = in_range(0, (int)system->planets.size());
+  system->Conquer(owned_id, 0);
+
   return system;
 }
 

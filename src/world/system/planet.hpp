@@ -23,7 +23,17 @@ class Planet : public CelestialBody {
 
   Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
 
+  bool is_owned() const;
+  unsigned int ship_rate() const;
+
+  void GenerateShips(float delta);
+
   std::vector<Planet*> connections;
+  int owner;
+  unsigned int ships;
+
+ private:
+  float ships_accum;
 };
 
 }
