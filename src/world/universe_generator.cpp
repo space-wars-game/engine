@@ -105,8 +105,8 @@ void UniverseGenerator::ConnectPlanets(int system, std::vector<Planet*>& planets
 
       Planet* connection = unconnected[p];
 
-      edge->connections.push_back(unconnected[p]);
-      connection->connections.push_back(edge);
+      edge->connections.push_back(unconnected[p]->id);
+      connection->connections.push_back(edge->id);
 
       connected.push(connection);
       unconnected.erase(unconnected.begin() + p);

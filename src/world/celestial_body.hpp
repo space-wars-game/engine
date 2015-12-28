@@ -4,6 +4,7 @@ namespace space_wars {
 
 class CelestialBody {
  public:
+  CelestialBody();
   CelestialBody(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
 
   void MoveInOrbit(unsigned int position);

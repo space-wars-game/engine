@@ -2,6 +2,7 @@
 #include "space_wars.hpp"
 #include "action/move.hpp"
 #include "world/universe_generator.hpp"
+#include "world/unserialize.hpp"
 
 namespace space_wars {
 
@@ -16,10 +17,12 @@ mmpg::World* SpaceWars::GenerateWorld() {
 
 
 mmpg::World* SpaceWars::ReadWorld(std::istream& stream) {
-  (void)stream;
+  Universe* universe = new Universe;
 
-  // TODO: Read world logic
-  return GenerateWorld();
+  // Read universe
+  Unserialize(*universe, stream);
+
+  return universe;
 }
 
 mmpg::Action* SpaceWars::ReadAction(std::istream& stream) {

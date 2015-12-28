@@ -10,6 +10,14 @@ System::System() {
 
 }
 
+System::~System() {
+  delete sun;
+
+  for(Planet* planet : planets) {
+    delete planet;
+  }
+}
+
 void System::Conquer(unsigned int planet_id, unsigned int player_id) {
   planets[planet_id]->owner = player_id;
 }

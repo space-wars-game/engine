@@ -18,6 +18,8 @@ set(SOURCE_FILES
         src/world/system/planet.cpp
 
         src/world/universe_generator.cpp
+        src/world/serialize.cpp
+        src/world/unserialize.cpp
         src/world/json_serializer.cpp
 )
 

@@ -13,6 +13,7 @@ class System {
   static unsigned int MAX_SIZE;
 
   System();
+  ~System();
 
   void Conquer(unsigned int planet_id, unsigned int player_id);
 

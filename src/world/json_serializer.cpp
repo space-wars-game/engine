@@ -64,7 +64,7 @@ void JSONSerializer::Serialize(const std::vector<Planet*>& planets, std::ostream
         stream << ",";
       }
 
-      stream << planet.connections[j]->id;
+      stream << planet.connections[j];
     }
 
     stream << "]";

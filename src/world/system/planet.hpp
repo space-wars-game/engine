@@ -21,6 +21,7 @@ class Planet : public CelestialBody {
   static unsigned int MIN_NUM_CONNECTIONS;
   static unsigned int MAX_NUM_CONNECTIONS;
 
+  Planet();
   Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
 
   bool is_owned() const;
@@ -28,7 +29,7 @@ class Planet : public CelestialBody {
 
   void GenerateShips(float delta);
 
-  std::vector<Planet*> connections;
+  std::vector<int> connections;
   int owner;
   unsigned int ships;
 
