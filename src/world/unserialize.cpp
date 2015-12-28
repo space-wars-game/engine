@@ -25,7 +25,7 @@ void Unserialize(System& system, std::istream& stream, Universe& universe) {
 }
 
 void Unserialize(Sun& sun, std::istream& stream) {
-  stream >> sun.id >> sun.radius;
+  stream >> sun.radius;
 
   // TODO: Sun type (un)serialization
   sun.type = Sun::G;

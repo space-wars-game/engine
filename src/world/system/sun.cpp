@@ -9,7 +9,7 @@ Sun::Sun() {
 
 }
 
-Sun::Sun(TYPE type, unsigned int radius) : super(radius, 0, 0, 0), type(type) {
+Sun::Sun(TYPE type, unsigned int radius) : type(type), radius(radius) {
 
 }
 

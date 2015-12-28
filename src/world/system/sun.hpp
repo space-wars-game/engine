@@ -5,9 +5,8 @@
 
 namespace space_wars {
 
-class Sun : public CelestialBody {
+class Sun {
  public:
-  typedef CelestialBody super;
 
   enum TYPE {
     G
@@ -20,6 +19,7 @@ class Sun : public CelestialBody {
   Sun(TYPE type, unsigned int radius);
 
   TYPE type;
+  unsigned int radius;
 };
 
 }
