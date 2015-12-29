@@ -45,4 +45,21 @@ void Planet::GenerateShips(float delta) {
   }
 }
 
+void Planet::FleetArrives(int fleet_owner, int fleet_ships) {
+  if(owner == -1) {
+    owner = fleet_owner;
+  }
+
+  if(fleet_owner == owner) {
+    ships += fleet_ships;
+  } else {
+    if(ships >= fleet_ships) {
+      ships -= fleet_ships;
+    } else {
+      owner = fleet_owner;
+      ships = fleet_ships - ships;
+    }
+  }
+}
+
 }

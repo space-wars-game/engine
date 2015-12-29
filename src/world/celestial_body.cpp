@@ -27,4 +27,11 @@ void CelestialBody::MoveInOrbit(unsigned int position) {
   orbit_position = position;
 }
 
+float CelestialBody::distance(const CelestialBody& body) const {
+  float xd = body.x - x;
+  float yd = body.y - y;
+
+  return sqrtf(xd*xd + yd*yd);
+}
+
 }

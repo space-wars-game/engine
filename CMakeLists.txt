@@ -8,6 +8,7 @@ set(SOURCE_FILES
 
         src/action.cpp
         src/action/move.cpp
+        src/action/send_fleet.cpp
 
         src/world/universe.cpp
         src/world/universe.hpp
@@ -21,6 +22,8 @@ set(SOURCE_FILES
         src/world/serialize.cpp
         src/world/unserialize.cpp
         src/world/json_serializer.cpp
+
+        src/world/entity/fleet.cpp
 )
 
 add_subdirectory(lib/engine)

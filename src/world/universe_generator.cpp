@@ -20,6 +20,10 @@ Universe* UniverseGenerator::Generate() {
   Universe* universe = new Universe;
   universe->system = GenerateSystem(0);
 
+  for(Planet* planet : universe->system->planets) {
+    universe->planets[planet->id] = planet;
+  }
+
   return universe;
 }
 

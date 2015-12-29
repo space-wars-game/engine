@@ -28,10 +28,11 @@ class Planet : public CelestialBody {
   unsigned int ship_rate() const;
 
   void GenerateShips(float delta);
+  void FleetArrives(int fleet_owner, int fleet_ships);
 
   std::vector<int> connections;
   int owner;
-  unsigned int ships;
+  int ships;
 
  private:
   float ships_accum;

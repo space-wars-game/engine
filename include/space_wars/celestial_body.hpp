@@ -9,6 +9,8 @@ class CelestialBody {
 
   void MoveInOrbit(unsigned int position);
 
+  float distance(const CelestialBody& body) const;
+
   float x, y;
   unsigned int id;
   unsigned int radius;

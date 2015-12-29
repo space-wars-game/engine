@@ -1,7 +1,7 @@
 #include "space_wars.hpp"
-#include "action/move.hpp"
 #include "world/universe_generator.hpp"
 #include "world/unserialize.hpp"
+#include "action/send_fleet.hpp"
 
 namespace space_wars {
 
@@ -25,16 +25,12 @@ mmpg::World* SpaceWars::ReadWorld(std::istream& stream) {
 }
 
 mmpg::Action* SpaceWars::ReadAction(char type, std::istream& stream) {
-  (void)stream;
-
-  // TODO: Complete this
-
   switch(type) {
-    case 'U':
-    case 'D':
-    case 'L':
-    case 'R':
-      return new Move(type);
+    case 'F':
+      int origin, destination, ships;
+      stream >> origin >> destination >> ships;
+
+      return new SendFleet(origin, destination, ships);
 
     default:
       return 0;

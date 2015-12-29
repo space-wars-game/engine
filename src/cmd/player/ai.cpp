@@ -1,5 +1,6 @@
 #include <ai.hpp>
 #include "../../world/universe.hpp"
+#include "../../action/send_fleet.hpp"
 
 namespace space_wars {
 
@@ -16,11 +17,7 @@ void AI::RefreshWorld() {
 }
 
 void AI::SendShips(int origin_id, int connection_id, int num_ships) {
-  (void)origin_id;
-  (void)connection_id;
-  (void)num_ships;
-
-  // TODO: Send ship logic
+  ChangeAction(new SendFleet(origin_id, connection_id, num_ships));
 }
 
 const std::vector<int>& AI::owned_planets(int player_id) const {
