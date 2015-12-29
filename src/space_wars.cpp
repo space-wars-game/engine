@@ -25,17 +25,17 @@ mmpg::World* SpaceWars::ReadWorld(std::istream& stream) {
   return universe;
 }
 
-mmpg::Action* SpaceWars::ReadAction(std::istream& stream) {
-  char t;
+mmpg::Action* SpaceWars::ReadAction(char type, std::istream& stream) {
+  (void)stream;
 
-  stream >> t;
+  // TODO: Complete this
 
-  switch(t) {
+  switch(type) {
     case 'U':
     case 'D':
     case 'L':
     case 'R':
-      return new Move(t);
+      return new Move(type);
 
     default:
       return 0;

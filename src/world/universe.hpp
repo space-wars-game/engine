@@ -11,7 +11,7 @@ namespace space_wars {
 class Universe : public mmpg::World {
  public:
   Universe();
-  ~Universe();
+  virtual ~Universe();
 
   const Planet& planet(int planet_id) const;
   const std::vector<int>& owned_planets(int player_id) const;

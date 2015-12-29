@@ -13,7 +13,7 @@ void Serialize(const System& system, std::ostream& stream) {
 }
 
 void Serialize(const Sun& sun, std::ostream& stream) {
-  stream << ' ' << sun.radius;
+  stream << sun.radius << std::endl;
 }
 
 void Serialize(const std::vector<Planet*>& planets, std::ostream& stream) {

@@ -7,14 +7,6 @@ void Unserialize(Universe& universe, std::istream& stream) {
   universe.system = new System;
 
   Unserialize(*universe.system, stream, universe);
-
-  for(Planet* planet : universe.system->planets) {
-    universe.planets[planet->id] = planet;
-
-    if(planet->is_owned()) {
-
-    }
-  }
 }
 
 void Unserialize(System& system, std::istream& stream, Universe& universe) {

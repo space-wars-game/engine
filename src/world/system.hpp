@@ -1,7 +1,7 @@
 #pragma once
 
 #include "system/sun.hpp"
-#include "system/planet.hpp"
+#include "planet.hpp"
 #include <vector>
 #include <set>
 

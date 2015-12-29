@@ -1,7 +1,6 @@
 #pragma once
 
 #include <ostream>
-#include "../celestial_body.hpp"
 
 namespace space_wars {
 

@@ -11,7 +11,7 @@ class SpaceWars : public mmpg::Game {
   mmpg::World* GenerateWorld();
   mmpg::World* ReadWorld(std::istream& stream);
 
-  mmpg::Action* ReadAction(std::istream& stream);
+  mmpg::Action* ReadAction(char type, std::istream& stream);
 };
 
 }

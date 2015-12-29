@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../celestial_body.hpp"
 #include <vector>
+#include "celestial_body.hpp"
 
 namespace space_wars {
 

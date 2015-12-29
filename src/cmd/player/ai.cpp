@@ -1,22 +1,35 @@
 #include <ai.hpp>
-#include "../../action/move.hpp"
+#include <iostream>
+#include "../../world/universe.hpp"
 
 namespace space_wars {
 
-mmpg::Action* AI::MoveUp() const {
-  return new Move('U');
+void AI::ScanUniverse() {
+  if(universe_ != 0) {
+    delete universe_;
+  }
+
+  universe_ = static_cast<Universe*>(read_world());
 }
 
-mmpg::Action* AI::MoveDown() const {
-  return new Move('D');
+void AI::RefreshWorld() {
+  ScanUniverse();
 }
 
-mmpg::Action* AI::MoveLeft() const {
-  return new Move('L');
+void AI::SendShips(int origin_id, int connection_id, int num_ships) {
+  (void)origin_id;
+  (void)connection_id;
+  (void)num_ships;
+
+  // TODO: Send ship logic
 }
 
-mmpg::Action* AI::MoveRight() const {
-  return new Move('R');
+const std::vector<int>& AI::owned_planets(int player_id) const {
+  return universe_->owned_planets(player_id);
+}
+
+const Planet& AI::planet(int planet_id) const {
+  return universe_->planet(planet_id);
 }
 
 }
