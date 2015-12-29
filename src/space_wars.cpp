@@ -1,4 +1,3 @@
-#include <iostream>
 #include "space_wars.hpp"
 #include "action/move.hpp"
 #include "world/universe_generator.hpp"

@@ -1,5 +1,4 @@
 #include "universe_generator.hpp"
-#include <iostream>
 #include <queue>
 
 namespace space_wars {

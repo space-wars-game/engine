@@ -1,5 +1,4 @@
 #include <ai.hpp>
-#include <iostream>
 #include "../../world/universe.hpp"
 
 namespace space_wars {
