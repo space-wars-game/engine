@@ -5,7 +5,7 @@ namespace space_wars {
 unsigned int Sun::MIN_RADIUS = 25;
 unsigned int Sun::MAX_RADIUS = 40;
 
-Sun::Sun() {
+Sun::Sun() : super(0, 0, 0, 0) {
 
 }
 

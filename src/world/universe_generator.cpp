@@ -1,4 +1,3 @@
-#include <iostream>
 #include "universe_generator.hpp"
 
 namespace space_wars {
@@ -10,51 +9,95 @@ enum SeedTypes {
   CONNECTION
 };
 
-int next_connected_candidate(const std::vector<Planet*>& connected, int i) {
-  do {
-    i = (i + 1) % (unsigned int)connected.size();
-  } while(connected[i]->connections.size() >= Planet::MAX_NUM_CONNECTIONS);
-
-  return i;
-}
-
-bool connection_intersects(const std::vector<Planet*>& planets, const Planet* c, const Planet* d) {
-  // Check connection does NOT intersect other planets
-  for(Planet* p : planets) {
-    if(p == c or p == d) {
-      continue;
-    }
-
-    if(p->ConnectionIntersects(c, d)) {
-      return true;
-    }
+class ConnectionGenerator {
+ public:
+  ConnectionGenerator(const std::vector<CelestialBody*>& bodies, const std::vector<Planet*> planets, int relay)
+      : bodies_(bodies), planets_(planets), disconnected_(planets)
+  {
+    connected_.push_back(planets_[relay]);
+    disconnected_.erase(disconnected_.begin() + relay);
   }
 
-  return false;
-}
+  bool is_finished() const {
+    return disconnected_.empty();
+  }
 
-bool find_connection_candidates(const std::vector<Planet*>& planets, const std::vector<Planet*>& connected,
-                                const std::vector<Planet*>& disconnected, int& c, int& d)
-{
-  c = next_connected_candidate(connected, c);
+  void Connect(int c, int d) {
+    if(!find_connection_candidates(c, d)) {
+      disconnected_.erase(disconnected_.begin() + d);
+      return;
+    }
 
-  int original_c = c;
-  int original_d = d;
+    // Connect planets
+    Planet* pc = connected_[c];
+    Planet* pd = disconnected_[d];
 
-  while(connection_intersects(planets, connected[c], disconnected[d])) {
-    c = next_connected_candidate(connected, c);
+    pc->connections.push_back(pd->id);
+    pd->connections.push_back(pc->id);
 
-    if(c == original_c) {
-      d = (d + 1) % (unsigned int)disconnected.size();
+    connected_.push_back(pd);
+    disconnected_.erase(disconnected_.begin() + d);
+  }
 
-      if(d == original_d) {
-        return false;
+  int connected_count() const {
+    return connected_.size();
+  }
+
+  int disconnected_count() const {
+    return disconnected_.size();
+  }
+
+ private:
+  std::vector<CelestialBody*> bodies_;
+  std::vector<Planet*> planets_;
+  std::vector<Planet*> connected_;
+  std::vector<Planet*> disconnected_;
+
+  bool find_connection_candidates(int& c, int& d)
+  {
+    c = next_connected_candidate(c);
+
+    int original_c = c;
+    int original_d = d;
+
+    while(connection_intersects(connected_[c], disconnected_[d])) {
+      c = next_connected_candidate(c);
+
+      if(c == original_c) {
+        d = (d + 1) % (unsigned int)disconnected_.size();
+
+        if(d == original_d) {
+          return false;
+        }
       }
     }
+
+    return true;
   }
 
-  return true;
-}
+  int next_connected_candidate(int i) {
+    do {
+      i = (i + 1) % (unsigned int)connected_.size();
+    } while(connected_[i]->connections.size() >= Planet::MAX_NUM_CONNECTIONS);
+
+    return i;
+  }
+
+  bool connection_intersects(const CelestialBody* c, const CelestialBody* d) {
+    // Check connection does NOT intersect other planets
+    for(CelestialBody* b : bodies_) {
+      if(b == c or b == d) {
+        continue;
+      }
+
+      if(b->ConnectionIntersects(c, d)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+};
 
 }
 
@@ -104,7 +147,7 @@ std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, Sun* sun) {
     planets.push_back(GeneratePlanet(system, (int)i, i == 0 ? (CelestialBody*)sun : (CelestialBody*)planets[i-1]));
   }
 
-  ConnectPlanets(system, planets);
+  ConnectPlanets(system, sun, planets);
 
   return planets;
 }
@@ -125,43 +168,32 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
   return new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
 }
 
-void UniverseGenerator::ConnectPlanets(int system, std::vector<Planet*>& planets) {
-  // Unconnected planets
-  std::vector<Planet*> disconnected(planets);
+void UniverseGenerator::ConnectPlanets(int system, Sun* sun, std::vector<Planet*>& planets) {
+  // List system bodies
+  std::vector<CelestialBody*> bodies;
 
-  // Connected
-  std::vector<Planet*> connected;
+  bodies.push_back(sun);
+
+  for(Planet* planet : planets) {
+    bodies.push_back(planet);
+  }
 
   // TODO: Add relays
   seed({SYSTEM, system, RELAY});
-  int relay_position = in_range(0, disconnected.size());
+  int relay_position = in_range(0, planets.size());
 
-  connected.push_back(disconnected[relay_position]);
-  disconnected.erase(disconnected.begin() + relay_position);
+  ConnectionGenerator connection_generator(bodies, planets, relay_position);
 
   seed({SYSTEM, system, CONNECTION});
 
-  while(!disconnected.empty()) {
+  while(!connection_generator.is_finished()) {
     // Get a connected planet randomly
-    int c = in_range(0, connected.size());
+    int c = in_range(0, connection_generator.connected_count());
 
     // Get a disconnected planet randomly
-    int d = in_range(0, disconnected.size());
+    int d = in_range(0, connection_generator.disconnected_count());
 
-    if(!find_connection_candidates(planets, connected, disconnected, c, d)) {
-      disconnected.erase(disconnected.begin() + d);
-      continue;
-    }
-
-    // Connect planets
-    Planet* pc = connected[c];
-    Planet* pd = disconnected[d];
-
-    pc->connections.push_back(pd->id);
-    pd->connections.push_back(pc->id);
-
-    connected.push_back(pd);
-    disconnected.erase(disconnected.begin() + d);
+    connection_generator.Connect(c, d);
   }
 }
 

@@ -1,6 +1,5 @@
 #include "celestial_body.hpp"
 #include <cmath>
-#include <iostream>
 #include "../vec2.hpp"
 
 namespace space_wars {
@@ -58,9 +57,6 @@ bool CelestialBody::ConnectionIntersects(const CelestialBody* a, const Celestial
 
   float t1 = (-bx - discriminant) / (2*ax);
   float t2 = (-bx + discriminant) / (2*ax);
-
-  std::cout << ax << std::endl;
-  std::cout << t1 << ' ' << t2 << std::endl;
 
   return (t1 >= 0 and t1 <= 1) or (t2 >= 0 and t2 <= 1);
 }
