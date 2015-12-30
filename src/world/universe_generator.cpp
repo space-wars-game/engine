@@ -35,7 +35,8 @@ System* UniverseGenerator::GenerateSystem(int id) {
 
   // TODO: Generate home systems
   unsigned int owned_id = in_range(0, (int)system->planets.size());
-  system->Conquer(owned_id, 0);
+  system->planets[owned_id]->owner = 0;
+  system->planets[(owned_id+1) % system->planets.size()]->owner = 1;
 
   return system;
 }

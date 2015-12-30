@@ -17,6 +17,9 @@ void AI::RefreshWorld() {
 }
 
 void AI::SendShips(int origin_id, int connection_id, int num_ships) {
+  if(num_ships <= 0)
+    return;
+
   ChangeAction(new SendFleet(origin_id, connection_id, num_ships));
 }
 
