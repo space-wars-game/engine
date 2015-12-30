@@ -1,5 +1,5 @@
+#include <iostream>
 #include "universe_generator.hpp"
-#include <queue>
 
 namespace space_wars {
 
@@ -9,6 +9,52 @@ enum SeedTypes {
   SYSTEM, SUN, PLANET, TYPE, RADIUS, SIZE, X, Y, DISTANCE_X, DISTANCE_Y, ORBIT_POSITION, RELAY,
   CONNECTION
 };
+
+int next_connected_candidate(const std::vector<Planet*>& connected, int i) {
+  do {
+    i = (i + 1) % (unsigned int)connected.size();
+  } while(connected[i]->connections.size() >= Planet::MAX_NUM_CONNECTIONS);
+
+  return i;
+}
+
+bool connection_intersects(const std::vector<Planet*>& planets, const Planet* c, const Planet* d) {
+  // Check connection does NOT intersect other planets
+  for(Planet* p : planets) {
+    if(p == c or p == d) {
+      continue;
+    }
+
+    if(p->ConnectionIntersects(c, d)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
+bool find_connection_candidates(const std::vector<Planet*>& planets, const std::vector<Planet*>& connected,
+                                const std::vector<Planet*>& disconnected, int& c, int& d)
+{
+  c = next_connected_candidate(connected, c);
+
+  int original_c = c;
+  int original_d = d;
+
+  while(connection_intersects(planets, connected[c], disconnected[d])) {
+    c = next_connected_candidate(connected, c);
+
+    if(c == original_c) {
+      d = (d + 1) % (unsigned int)disconnected.size();
+
+      if(d == original_d) {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
 
 }
 
@@ -81,40 +127,41 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
 
 void UniverseGenerator::ConnectPlanets(int system, std::vector<Planet*>& planets) {
   // Unconnected planets
-  std::vector<Planet*> unconnected(planets);
+  std::vector<Planet*> disconnected(planets);
 
   // Connected
-  std::queue<Planet*> connected;
+  std::vector<Planet*> connected;
 
   // TODO: Add relays
   seed({SYSTEM, system, RELAY});
-  int relay_position = in_range(0, unconnected.size());
+  int relay_position = in_range(0, disconnected.size());
 
-  connected.push(unconnected[relay_position]);
-  unconnected.erase(unconnected.begin() + relay_position);
+  connected.push_back(disconnected[relay_position]);
+  disconnected.erase(disconnected.begin() + relay_position);
 
   seed({SYSTEM, system, CONNECTION});
 
-  while(!unconnected.empty()) {
-    // Get the first connected edge
-    Planet* edge = connected.front();
-    connected.pop();
+  while(!disconnected.empty()) {
+    // Get a connected planet randomly
+    int c = in_range(0, connected.size());
 
-    // Choose how many planets to connect to this edge
-    int num_planets = in_range(Planet::MIN_NUM_CONNECTIONS, std::min(Planet::MAX_NUM_CONNECTIONS, (unsigned int) unconnected.size()));
+    // Get a disconnected planet randomly
+    int d = in_range(0, disconnected.size());
 
-    // Connect num_planets choosing randomly
-    for(int i = 0; i < num_planets; ++i) {
-      int p = in_range(0, unconnected.size());
-
-      Planet* connection = unconnected[p];
-
-      edge->connections.push_back(unconnected[p]->id);
-      connection->connections.push_back(edge->id);
-
-      connected.push(connection);
-      unconnected.erase(unconnected.begin() + p);
+    if(!find_connection_candidates(planets, connected, disconnected, c, d)) {
+      disconnected.erase(disconnected.begin() + d);
+      continue;
     }
+
+    // Connect planets
+    Planet* pc = connected[c];
+    Planet* pd = disconnected[d];
+
+    pc->connections.push_back(pd->id);
+    pd->connections.push_back(pc->id);
+
+    connected.push_back(pd);
+    disconnected.erase(disconnected.begin() + d);
   }
 }
 

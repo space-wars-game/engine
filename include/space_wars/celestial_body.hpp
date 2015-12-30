@@ -11,6 +11,8 @@ class CelestialBody {
 
   float distance(const CelestialBody& body) const;
 
+  bool ConnectionIntersects(const CelestialBody* a, const CelestialBody* b) const;
+
   float x, y;
   unsigned int id;
   unsigned int radius;
