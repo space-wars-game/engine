@@ -1,11 +1,12 @@
 #pragma once
 
-#include <ostream>
+#include "celestial_body.hpp"
 
 namespace space_wars {
 
-class Sun {
+class Sun : public CelestialBody {
  public:
+  typedef CelestialBody super;
 
   enum TYPE {
     G
@@ -18,7 +19,6 @@ class Sun {
   Sun(TYPE type, unsigned int radius);
 
   TYPE type;
-  unsigned int radius;
 };
 
 }

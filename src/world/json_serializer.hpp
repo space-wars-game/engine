@@ -2,6 +2,7 @@
 
 #include "system.hpp"
 #include <vector>
+#include <ostream>
 
 namespace space_wars {
 
