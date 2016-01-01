@@ -5,19 +5,21 @@
 namespace space_wars {
 
 
-Universe::Universe() : system(0) {
+Universe::Universe() {
 
 }
 
 Universe::~Universe() {
-  if(system != 0) {
+  for(System* system : systems) {
     delete system;
   }
 }
 
 void Universe::Update(float delta) {
-  for(Planet* planet : system->planets) {
-    planet->GenerateShips(delta);
+  for(System* system : systems) {
+    for(Planet* planet : system->planets) {
+      planet->GenerateShips(delta);
+    }
   }
 
   auto it = fleets.begin();

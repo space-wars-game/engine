@@ -4,9 +4,21 @@
 namespace space_wars {
 
 void Unserialize(Universe& universe, std::istream& stream) {
-  universe.system = new System;
+  Unserialize(universe.systems, stream, universe);
+}
 
-  Unserialize(*universe.system, stream, universe);
+void Unserialize(std::vector<System*>& systems, std::istream& stream, Universe& universe) {
+  int num_systems;
+
+  stream >> num_systems;
+
+  for(int i = 0; i < num_systems; ++i) {
+    System* system = new System;
+
+    Unserialize(*system, stream, universe);
+
+    systems.push_back(system);
+  }
 }
 
 void Unserialize(System& system, std::istream& stream, Universe& universe) {

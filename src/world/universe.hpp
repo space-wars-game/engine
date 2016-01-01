@@ -27,7 +27,7 @@ class Universe : public mmpg::World {
   JSONSerializer json_serializer_;
 
  public:
-  System* system;
+  std::vector<System*> systems;
   std::map<int, Planet*> planets;
   std::map<int, std::vector<int>> player_planets;
   std::vector<Fleet*> fleets;

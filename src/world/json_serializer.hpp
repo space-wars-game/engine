@@ -13,6 +13,7 @@ class JSONSerializer {
   JSONSerializer();
 
   void Serialize(const Universe& universe, std::ostream& stream);
+  void Serialize(const std::vector<System*>& systems, std::ostream& stream);
   void Serialize(const System& system, std::ostream& stream);
   void Serialize(const Sun& sun, std::ostream& stream);
   void Serialize(const std::vector<Planet*>& planets, std::ostream& stream);

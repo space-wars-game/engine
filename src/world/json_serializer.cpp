@@ -17,13 +17,27 @@ void JSONSerializer::Serialize(const Universe& universe, std::ostream& stream) {
 
   stream << "],";
 
-  Serialize(*universe.system, stream);
+  Serialize(universe.systems, stream);
 
   stream << "}";
 }
 
+void JSONSerializer::Serialize(const std::vector<System*>& systems, std::ostream& stream) {
+  stream << ATTR(systems) << ":[";
+
+  for(unsigned int i = 0; i < systems.size(); ++i) {
+    if(i != 0) {
+      stream << ',';
+    }
+
+    Serialize(*systems[i], stream);
+  }
+
+  stream << "]";
+}
+
 void JSONSerializer::Serialize(const System& system, std::ostream& stream) {
-  stream << ATTR(system) << ":{";
+  stream << '{';
 
   Serialize(*system.sun, stream);
 

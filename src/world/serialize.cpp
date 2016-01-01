@@ -4,7 +4,15 @@
 namespace space_wars {
 
 void Serialize(const space_wars::Universe& universe, std::ostream& stream) {
-  Serialize(*universe.system, stream);
+  Serialize(universe.systems, stream);
+}
+
+void Serialize(const std::vector<System*>& systems, std::ostream& stream) {
+  stream << systems.size() << std::endl;
+
+  for(System* system : systems) {
+    Serialize(*system, stream);
+  }
 }
 
 void Serialize(const System& system, std::ostream& stream) {

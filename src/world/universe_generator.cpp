@@ -107,10 +107,15 @@ UniverseGenerator::UniverseGenerator(int seed) : seed_(seed) {
 
 Universe* UniverseGenerator::Generate() {
   Universe* universe = new Universe;
-  universe->system = GenerateSystem(0);
 
-  for(Planet* planet : universe->system->planets) {
-    universe->planets[planet->id] = planet;
+  for(int i = 0; i < 300; ++i) {
+    System* system = GenerateSystem(i);
+
+    for(Planet* planet : system->planets) {
+      universe->planets[planet->id] = planet;
+    }
+
+    universe->systems.push_back(system);
   }
 
   return universe;
