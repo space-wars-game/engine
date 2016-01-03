@@ -1,6 +1,8 @@
 #include <iostream>
 #include "universe.hpp"
-#include "serialize.hpp"
+#include "../serialize/raw.hpp"
+#include "../serialize/json.hpp"
+#include "../deserialize.hpp"
 
 namespace space_wars {
 
@@ -41,38 +43,41 @@ void Universe::Update(float delta) {
 }
 
 void Universe::MoveFleet(int player_id, int origin_id, int destination_id, int num_ships) {
-  auto origin_it = planets.find(origin_id);
-
-  if(origin_it == planets.end()) {
+  if(origin_id < 0 or origin_id >= planets.size() or destination_id < 0 or destination_id >= planets.size()) {
     return;
   }
 
-  auto destination_it = planets.find(destination_id);
+  Planet& origin = *(planets[origin_id]);
 
-  if(destination_it == planets.end()) {
-    return;
-  }
-
-  Planet& origin = *(origin_it->second);
-
-  if(origin.owner != player_id or origin.ships < num_ships) {
+  if(origin.owner != player_id or origin.ships < num_ships or !origin.HasConnection(destination_id)) {
     return;
   }
 
   origin.ships -= num_ships;
 
-  Planet& destination = *(destination_it->second);
+  Planet& destination = *(planets[destination_id]);
 
   fleets.push_back(new Fleet(player_id, num_ships, destination_id, origin.distance(destination)));
 }
 
-void Universe::Print(std::ostream& stream) {
-  Serialize(*this, stream);
+void Universe::PrintStructure(std::ostream& stream) const {
+  serialize::raw::Structure(*this, stream);
 }
 
+void Universe::PrintViewerStructure(std::ostream& stream) const {
+  serialize::json::Structure(*this, stream);
+}
 
-void Universe::PrintJSON(std::ostream& stream) {
-  json_serializer_.Serialize(*this, stream);
+void Universe::ReadData(std::istream& stream) {
+  deserialize::Data(*this, stream);
+}
+
+void Universe::PrintData(std::ostream& stream) const {
+  serialize::raw::Data(*this, stream);
+}
+
+void Universe::PrintViewerData(std::ostream& stream) const {
+  serialize::json::Data(*this, stream);
 }
 
 const std::vector<int>& Universe::owned_planets(int player_id) const {
@@ -80,7 +85,7 @@ const std::vector<int>& Universe::owned_planets(int player_id) const {
 }
 
 const Planet& Universe::planet(int planet_id) const {
-  return *planets.find(planet_id)->second;
+  return *planets[planet_id];
 }
 
 }

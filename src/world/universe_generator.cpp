@@ -112,7 +112,7 @@ Universe* UniverseGenerator::Generate() {
     System* system = GenerateSystem(i);
 
     for(Planet* planet : system->planets) {
-      universe->planets[planet->id] = planet;
+      universe->planets.push_back(planet);
     }
 
     universe->systems.push_back(system);

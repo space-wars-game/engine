@@ -1,6 +1,6 @@
 #include "space_wars.hpp"
 #include "world/universe_generator.hpp"
-#include "world/unserialize.hpp"
+#include "deserialize.hpp"
 #include "action/send_fleet.hpp"
 
 namespace space_wars {
@@ -19,7 +19,7 @@ mmpg::World* SpaceWars::ReadWorld(std::istream& stream) {
   Universe* universe = new Universe;
 
   // Read universe
-  Unserialize(*universe, stream);
+  deserialize::Structure(*universe, stream);
 
   return universe;
 }

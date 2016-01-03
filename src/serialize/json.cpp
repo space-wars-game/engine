@@ -1,28 +1,22 @@
-#include "json_serializer.hpp"
-#include "universe.hpp"
+#include "json.hpp"
+#include "../world/universe.hpp"
 
 namespace space_wars {
+namespace serialize {
+namespace json {
 
 #define QUOTE "\""
 #define ATTR(__name__) QUOTE #__name__ QUOTE
 
-JSONSerializer::JSONSerializer() {
+void Structure(const Universe& universe, std::ostream& stream) {
+  stream << "{";
 
-}
-
-void JSONSerializer::Serialize(const Universe& universe, std::ostream& stream) {
-  stream << "{" << ATTR(players) << ":[";
-
-  // TODO: Serialize player data
-
-  stream << "],";
-
-  Serialize(universe.systems, stream);
+  Structure(universe.systems, stream);
 
   stream << "}";
 }
 
-void JSONSerializer::Serialize(const std::vector<System*>& systems, std::ostream& stream) {
+void Structure(const std::vector<System*>& systems, std::ostream& stream) {
   stream << ATTR(systems) << ":[";
 
   for(unsigned int i = 0; i < systems.size(); ++i) {
@@ -30,31 +24,31 @@ void JSONSerializer::Serialize(const std::vector<System*>& systems, std::ostream
       stream << ',';
     }
 
-    Serialize(*systems[i], stream);
+    Structure(*systems[i], stream);
   }
 
   stream << "]";
 }
 
-void JSONSerializer::Serialize(const System& system, std::ostream& stream) {
+void Structure(const System& system, std::ostream& stream) {
   stream << '{';
 
-  Serialize(*system.sun, stream);
+  Structure(*system.sun, stream);
 
-  stream << ",";
+  stream << ',';
 
-  Serialize(system.planets, stream);
+  Structure(system.planets, stream);
 
-  stream << "}";
+  stream << '}';
 }
 
-void JSONSerializer::Serialize(const Sun& sun, std::ostream& stream) {
+void Structure(const Sun& sun, std::ostream& stream) {
   stream << ATTR(sun) << ":{";
   stream << ATTR(type) << ":" << QUOTE << "G" << QUOTE << "," << ATTR(radius) << ":" << sun.radius;
   stream << "}";
 }
 
-void JSONSerializer::Serialize(const std::vector<Planet*>& planets, std::ostream& stream) {
+void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
   stream << ATTR(planets) << ":[";
 
   for(unsigned int i = 0; i < planets.size(); ++i) {
@@ -68,9 +62,6 @@ void JSONSerializer::Serialize(const std::vector<Planet*>& planets, std::ostream
     stream << ATTR(id) << ":" << planet.id << ",";
     stream << ATTR(x) << ":" << planet.x << "," << ATTR(y) << ":" << planet.y << ",";
     stream << ATTR(radius) << ":" << planet.radius << ",";
-    stream << ATTR(owner) << ":" << planet.owner << ",";
-    stream << ATTR(ships) << ":" << planet.ships << ",";
-
     stream << ATTR(connections) << ":[";
 
     for(unsigned int j = 0; j < planet.connections.size(); ++j) {
@@ -89,7 +80,23 @@ void JSONSerializer::Serialize(const std::vector<Planet*>& planets, std::ostream
   stream << "]";
 }
 
+void Data(const Universe& universe, std::ostream& stream) {
+  stream << "{";
+
+  stream << ATTR(planets) << ":[";
+
+  stream << universe.planets[0]->owner << ',' << universe.planets[0]->radius;
+
+  for(unsigned int i = 1; i < universe.planets.size(); ++i) {
+    stream << ',' << universe.planets[i]->owner << ',' << universe.planets[i]->ships;
+  }
+
+  stream << "]}";
+}
+
 #undef QUOTE
 #undef ATTR
 
+}
+}
 }

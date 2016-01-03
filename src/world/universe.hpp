@@ -4,7 +4,6 @@
 #include <vector>
 #include <mmpg/world.hpp>
 #include "system.hpp"
-#include "json_serializer.hpp"
 #include "entity/fleet.hpp"
 
 namespace space_wars {
@@ -20,15 +19,16 @@ class Universe : public mmpg::World {
   void Update(float delta);
   void MoveFleet(int player_id, int origin_id, int destination_id, int num_ships);
 
-  void Print(std::ostream& stream);
-  void PrintJSON(std::ostream& stream);
+  void PrintStructure(std::ostream& stream) const;
+  void PrintViewerStructure(std::ostream& stream) const;
 
- private:
-  JSONSerializer json_serializer_;
+  void ReadData(std::istream& stream);
+  void PrintData(std::ostream& stream) const;
+  void PrintViewerData(std::ostream& stream) const;
 
  public:
   std::vector<System*> systems;
-  std::map<int, Planet*> planets;
+  std::vector<Planet*> planets;
   std::map<int, std::vector<int>> player_planets;
   std::vector<Fleet*> fleets;
 };

@@ -4,16 +4,12 @@
 
 namespace space_wars {
 
-void AI::ScanUniverse() {
-  if(universe_ != 0) {
-    delete universe_;
-  }
-
-  universe_ = static_cast<Universe*>(read_world());
+void AI::world(mmpg::World* world) {
+  universe_ = static_cast<Universe*>(world);
 }
 
-void AI::RefreshWorld() {
-  ScanUniverse();
+void AI::ScanUniverse() {
+  RefreshWorld(universe_);
 }
 
 void AI::SendShips(int origin_id, int connection_id, int num_ships) {

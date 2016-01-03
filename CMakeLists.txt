@@ -10,6 +10,8 @@ set(SOURCE_FILES
         src/action/move.cpp
         src/action/send_fleet.cpp
 
+        src/world/universe_generator.cpp
+
         src/world/universe.cpp
         src/world/universe.hpp
         src/world/celestial_body.cpp
@@ -18,12 +20,12 @@ set(SOURCE_FILES
         src/world/system/sun.cpp
         src/world/system/planet.cpp
 
-        src/world/universe_generator.cpp
-        src/world/serialize.cpp
-        src/world/unserialize.cpp
-        src/world/json_serializer.cpp
-
         src/world/entity/fleet.cpp
+
+        src/serialize/raw.cpp
+        src/serialize/json.cpp
+
+        src/deserialize.cpp
 )
 
 add_subdirectory(lib/engine)

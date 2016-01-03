@@ -3,6 +3,12 @@
 
 namespace space_wars {
 
+namespace {
+
+static unsigned int NEXT_ID = 0;
+
+}
+
 unsigned int Planet::MIN_RADIUS = 7;
 unsigned int Planet::MAX_RADIUS = 18;
 
@@ -20,8 +26,8 @@ Planet::Planet() {
 }
 
 Planet::Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position)
-    : super(radius, orbit_major, orbit_minor, orbit_position), owner(-1), ships(0), ships_accum(0.f) {
-
+    : super(radius, orbit_major, orbit_minor, orbit_position), id(NEXT_ID), owner(-1), ships(0), ships_accum(0.f) {
+  NEXT_ID++;
 }
 
 bool Planet::is_owned() const {
@@ -30,6 +36,16 @@ bool Planet::is_owned() const {
 
 unsigned int Planet::ship_rate() const {
   return radius / 4;
+}
+
+bool Planet::HasConnection(int planet_id) {
+  for(int connection : connections) {
+    if(planet_id == connection) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 void Planet::GenerateShips(float delta) {

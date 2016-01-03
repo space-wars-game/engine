@@ -26,10 +26,12 @@ class Planet : public CelestialBody {
 
   bool is_owned() const;
   unsigned int ship_rate() const;
+  bool HasConnection(int planet_id);
 
   void GenerateShips(float delta);
   void FleetArrives(int fleet_owner, int fleet_ships);
 
+  unsigned int id;
   std::vector<int> connections;
   int owner;
   int ships;
