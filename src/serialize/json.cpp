@@ -85,7 +85,7 @@ void Data(const Universe& universe, std::ostream& stream) {
 
   stream << ATTR(planets) << ":[";
 
-  stream << universe.planets[0]->owner << ',' << universe.planets[0]->radius;
+  stream << universe.planets[0]->owner << ',' << universe.planets[0]->ships;
 
   for(unsigned int i = 1; i < universe.planets.size(); ++i) {
     stream << ',' << universe.planets[i]->owner << ',' << universe.planets[i]->ships;
