@@ -10,8 +10,9 @@ class UniverseGenerator {
  public:
   UniverseGenerator(int seed);
 
-  Universe* Generate();
+  Universe* Generate(int num_players, int neutral_systems_ratio);
   System* GenerateSystem(int i);
+  System* GenerateHomeSystem(int id, int player_id);
   Sun* GenerateSun(int system);
   std::vector<Planet*> GeneratePlanets(int system, Sun* sun);
   Planet* GeneratePlanet(int system, int id, CelestialBody* previous);

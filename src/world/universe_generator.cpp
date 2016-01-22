@@ -105,11 +105,11 @@ UniverseGenerator::UniverseGenerator(int seed) : seed_(seed) {
 
 }
 
-Universe* UniverseGenerator::Generate() {
+Universe* UniverseGenerator::Generate(int num_players, int neutral_systems_ratio) {
   Universe* universe = new Universe;
 
-  for(int i = 0; i < 300; ++i) {
-    System* system = GenerateSystem(i);
+  for(int i = 0; i < num_players * neutral_systems_ratio; ++i) {
+    System* system = (i % 3 == 0) ? GenerateHomeSystem(i, i / neutral_systems_ratio) : GenerateSystem(i);
 
     for(Planet* planet : system->planets) {
       universe->planets.push_back(planet);
@@ -127,10 +127,18 @@ System* UniverseGenerator::GenerateSystem(int id) {
   system->sun = GenerateSun(id);
   system->planets = GeneratePlanets(id, system->sun);
 
-  // TODO: Generate home systems
-  unsigned int owned_id = in_range(0, (int)system->planets.size());
-  system->planets[owned_id]->owner = 0;
-  system->planets[(owned_id+1) % system->planets.size()]->owner = 1;
+  return system;
+}
+
+System* UniverseGenerator::GenerateHomeSystem(int id, int player_id) {
+  System* system = new System;
+
+  system->sun = GenerateSun(id);
+
+  Planet* home = new Planet(Planet::MAX_RADIUS, 100, 80, 0);
+  home->owner = player_id;
+
+  system->planets.push_back(home);
 
   return system;
 }
