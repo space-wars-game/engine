@@ -204,22 +204,23 @@ void UniverseGenerator::ConnectRelayToPlanets(int id, System& system) {
   std::vector<CelestialBody*> bodies;
 
   bodies.push_back(system.sun);
-  bodies.push_back(system.relay);
 
   for(Planet* planet : system.planets) {
     bodies.push_back(planet);
   }
 
   seed({SYSTEM, id, RELAY, CONNECTION});
-  int num_planets = in_range(Planet::MIN_NUM_CONNECTIONS, std::min(Planet::MAX_NUM_CONNECTIONS, (unsigned int)system.planets.size()));
+  std::vector<Planet*> planets(system.planets);
+  int num_planets = in_range(Planet::MIN_NUM_CONNECTIONS, std::min(Planet::MAX_NUM_CONNECTIONS, (unsigned int)planets.size()));
+  int i = 0;
 
-  for(int i = 0; i < num_planets; ++i) {
-    int s = in_range(0, system.planets.size());
+  while(!planets.empty() and i < num_planets) {
+    int s = in_range(0, (unsigned int)planets.size());
     int p = s;
     bool found = true;
 
-    while(connection_intersects(system.relay, system.planets[p], bodies)) {
-      p = (p + 1) % (unsigned int)system.planets.size();
+    while(connection_intersects(system.relay, planets[p], bodies)) {
+      p = (p + 1) % (unsigned int)planets.size();
 
       if(p == s) {
         found = false;
@@ -228,10 +229,13 @@ void UniverseGenerator::ConnectRelayToPlanets(int id, System& system) {
     }
 
     if(found) {
-      Planet* planet = system.planets[p];
+      Planet* planet = planets[p];
       system.relay->planets.push_back(planet->id);
       planet->relay = system.relay->id;
+      planets.erase(planets.begin() + p);
     }
+
+    ++i;
   }
 }
 
