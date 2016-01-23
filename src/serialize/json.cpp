@@ -37,6 +37,10 @@ void Structure(const System& system, std::ostream& stream) {
 
   stream << ',';
 
+  Structure(*system.relay, stream);
+
+  stream << ',';
+
   Structure(system.planets, stream);
 
   stream << '}';
@@ -46,6 +50,32 @@ void Structure(const Sun& sun, std::ostream& stream) {
   stream << ATTR(sun) << ":{";
   stream << ATTR(type) << ":" << QUOTE << "G" << QUOTE << "," << ATTR(radius) << ":" << sun.radius;
   stream << "}";
+}
+
+void Structure(const Relay& relay, std::ostream& stream) {
+  stream << ATTR(relay) << ":{";
+  stream << ATTR(radius) << ':' << relay.radius << ',' << ATTR(x) << ':' << relay.x << ',' << ATTR(y) << ':' << relay.y;
+  stream << ',' << ATTR(connections) << ":[";
+
+  for(unsigned int i = 0; i < relay.connections.size(); ++i) {
+    if(i != 0) {
+      stream << ',';
+    }
+
+    stream << relay.connections[i];
+  }
+
+  stream << "]," << ATTR(planets) << ":[";
+
+  for(unsigned int i = 0; i < relay.planets.size(); ++i) {
+    if(i != 0) {
+      stream << ',';
+    }
+
+    stream << relay.planets[i];
+  }
+
+  stream << "]}";
 }
 
 void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
@@ -62,6 +92,7 @@ void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
     stream << ATTR(id) << ":" << planet.id << ",";
     stream << ATTR(x) << ":" << planet.x << "," << ATTR(y) << ":" << planet.y << ",";
     stream << ATTR(radius) << ":" << planet.radius << ",";
+    stream << ATTR(relay) << ':' << planet.relay << ',';
     stream << ATTR(connections) << ":[";
 
     for(unsigned int j = 0; j < planet.connections.size(); ++j) {

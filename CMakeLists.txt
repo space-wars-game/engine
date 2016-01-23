@@ -19,6 +19,7 @@ set(SOURCE_FILES
         src/world/system.cpp
         src/world/system/sun.cpp
         src/world/system/planet.cpp
+        src/world/system/relay.cpp
 
         src/world/entity/fleet.cpp
 

@@ -26,7 +26,9 @@ Planet::Planet() {
 }
 
 Planet::Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position)
-    : super(radius, orbit_major, orbit_minor, orbit_position), id(NEXT_ID), owner(-1), ships(0), ships_accum(0.f) {
+    : super(radius, orbit_major, orbit_minor, orbit_position), id(NEXT_ID), owner(-1), ships(0), ships_accum(0.f),
+      relay(-1)
+{
   NEXT_ID++;
 }
 
@@ -38,7 +40,7 @@ unsigned int Planet::ship_rate() const {
   return radius / 4;
 }
 
-bool Planet::HasConnection(int planet_id) {
+bool Planet::HasConnection(int planet_id) const {
   for(int connection : connections) {
     if(planet_id == connection) {
       return true;
@@ -46,6 +48,10 @@ bool Planet::HasConnection(int planet_id) {
   }
 
   return false;
+}
+
+bool Planet::has_relay() const {
+  return relay != -1;
 }
 
 void Planet::GenerateShips(float delta) {

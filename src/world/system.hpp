@@ -1,6 +1,7 @@
 #pragma once
 
 #include "system/sun.hpp"
+#include "relay.hpp"
 #include "planet.hpp"
 #include <vector>
 #include <set>
@@ -18,6 +19,7 @@ class System {
   void Conquer(unsigned int planet_id, unsigned int player_id);
 
   Sun* sun;
+  Relay* relay;
   std::vector<Planet*> planets;
 };
 

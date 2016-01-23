@@ -14,10 +14,12 @@ class UniverseGenerator {
   System* GenerateSystem(int i);
   System* GenerateHomeSystem(int id, int player_id);
   Sun* GenerateSun(int system);
-  std::vector<Planet*> GeneratePlanets(int system, Sun* sun);
+  Relay* GenerateRelay(int system, Sun* sun);
+  std::vector<Planet*> GeneratePlanets(int system, CelestialBody* previous);
   Planet* GeneratePlanet(int system, int id, CelestialBody* previous);
 
-  void ConnectPlanets(int system, Sun* sun, std::vector<Planet*>& planets);
+  void ConnectPlanets(int id, System& system);
+  void ConnectRelayToPlanets(int id, System& system);
 
  private:
   int seed_;

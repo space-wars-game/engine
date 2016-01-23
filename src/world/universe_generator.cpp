@@ -9,13 +9,28 @@ enum SeedTypes {
   CONNECTION
 };
 
+bool connection_intersects(const CelestialBody* c, const CelestialBody* d, const std::vector<CelestialBody*> bodies) {
+  // Check connection does NOT intersect other planets
+  for(CelestialBody* b : bodies) {
+    if(b == c or b == d) {
+      continue;
+    }
+
+    if(b->ConnectionIntersects(c, d)) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 class ConnectionGenerator {
  public:
-  ConnectionGenerator(const std::vector<CelestialBody*>& bodies, const std::vector<Planet*> planets, int relay)
+  ConnectionGenerator(const std::vector<CelestialBody*>& bodies, const std::vector<Planet*> planets, int start)
       : bodies_(bodies), planets_(planets), disconnected_(planets)
   {
-    connected_.push_back(planets_[relay]);
-    disconnected_.erase(disconnected_.begin() + relay);
+    connected_.push_back(planets_[start]);
+    disconnected_.erase(disconnected_.begin() + start);
   }
 
   bool is_finished() const {
@@ -60,7 +75,7 @@ class ConnectionGenerator {
     int original_c = c;
     int original_d = d;
 
-    while(connection_intersects(connected_[c], disconnected_[d])) {
+    while(connection_intersects(connected_[c], disconnected_[d], bodies_)) {
       c = next_connected_candidate(c);
 
       if(c == original_c) {
@@ -81,21 +96,6 @@ class ConnectionGenerator {
     } while(connected_[i]->connections.size() >= Planet::MAX_NUM_CONNECTIONS);
 
     return i;
-  }
-
-  bool connection_intersects(const CelestialBody* c, const CelestialBody* d) {
-    // Check connection does NOT intersect other planets
-    for(CelestialBody* b : bodies_) {
-      if(b == c or b == d) {
-        continue;
-      }
-
-      if(b->ConnectionIntersects(c, d)) {
-        return true;
-      }
-    }
-
-    return false;
   }
 };
 
@@ -125,7 +125,11 @@ System* UniverseGenerator::GenerateSystem(int id) {
   System* system = new System;
 
   system->sun = GenerateSun(id);
-  system->planets = GeneratePlanets(id, system->sun);
+  system->relay = GenerateRelay(id, system->sun);
+  system->planets = GeneratePlanets(id, system->relay);
+
+  ConnectRelayToPlanets(id, *system);
+  ConnectPlanets(id, *system);
 
   return system;
 }
@@ -134,11 +138,14 @@ System* UniverseGenerator::GenerateHomeSystem(int id, int player_id) {
   System* system = new System;
 
   system->sun = GenerateSun(id);
+  system->relay = new Relay(100, 80, 90);
 
   Planet* home = new Planet(Planet::MAX_RADIUS, 100, 80, 0);
   home->owner = player_id;
 
   system->planets.push_back(home);
+
+  ConnectRelayToPlanets(id, *system);
 
   return system;
 }
@@ -149,7 +156,20 @@ Sun* UniverseGenerator::GenerateSun(int system) {
   return new Sun(Sun::G, in_range(Sun::MIN_RADIUS, Sun::MAX_RADIUS));
 }
 
-std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, Sun* sun) {
+Relay* UniverseGenerator::GenerateRelay(int system, Sun* sun) {
+  seed({SYSTEM, system, RELAY, DISTANCE_X});
+  unsigned int distance_x = in_range(Planet::MIN_DISTANCE_X, Planet::MAX_DISTANCE_X) + sun->radius + Relay::RADIUS;
+
+  seed({SYSTEM, system, RELAY, DISTANCE_Y});
+  unsigned int distance_y = in_range(Planet::MIN_DISTANCE_Y, Planet::MAX_DISTANCE_Y) + sun->radius + Relay::RADIUS;
+
+  seed({SYSTEM, system, RELAY, ORBIT_POSITION});
+  unsigned int orbit_position = in_range(0, 360);
+
+  return new Relay(distance_x, distance_y, orbit_position);
+}
+
+std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, CelestialBody* previous) {
   seed({SYSTEM, system, SIZE});
 
   unsigned int size = in_range(System::MIN_SIZE, System::MAX_SIZE);
@@ -157,10 +177,8 @@ std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, Sun* sun) {
   std::vector<Planet*> planets;
 
   for(unsigned int i = 0; i < size; ++i) {
-    planets.push_back(GeneratePlanet(system, (int)i, i == 0 ? (CelestialBody*)sun : (CelestialBody*)planets[i-1]));
+    planets.push_back(GeneratePlanet(system, (int)i, i == 0 ? previous : (CelestialBody*)planets[i-1]));
   }
-
-  ConnectPlanets(system, sun, planets);
 
   return planets;
 }
@@ -181,23 +199,58 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
   return new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
 }
 
-void UniverseGenerator::ConnectPlanets(int system, Sun* sun, std::vector<Planet*>& planets) {
+void UniverseGenerator::ConnectRelayToPlanets(int id, System& system) {
   // List system bodies
   std::vector<CelestialBody*> bodies;
 
-  bodies.push_back(sun);
+  bodies.push_back(system.sun);
+  bodies.push_back(system.relay);
 
-  for(Planet* planet : planets) {
+  for(Planet* planet : system.planets) {
     bodies.push_back(planet);
   }
 
-  // TODO: Add relays
-  seed({SYSTEM, system, RELAY});
-  int relay_position = in_range(0, planets.size());
+  seed({SYSTEM, id, RELAY, CONNECTION});
+  int num_planets = in_range(Planet::MIN_NUM_CONNECTIONS, std::min(Planet::MAX_NUM_CONNECTIONS, (unsigned int)system.planets.size()));
 
-  ConnectionGenerator connection_generator(bodies, planets, relay_position);
+  for(int i = 0; i < num_planets; ++i) {
+    int s = in_range(0, system.planets.size());
+    int p = s;
+    bool found = true;
 
-  seed({SYSTEM, system, CONNECTION});
+    while(connection_intersects(system.relay, system.planets[p], bodies)) {
+      p = (p + 1) % (unsigned int)system.planets.size();
+
+      if(p == s) {
+        found = false;
+        break;
+      }
+    }
+
+    if(found) {
+      Planet* planet = system.planets[p];
+      system.relay->planets.push_back(planet->id);
+      planet->relay = system.relay->id;
+    }
+  }
+}
+
+void UniverseGenerator::ConnectPlanets(int id, System& system) {
+  // List system bodies
+  std::vector<CelestialBody*> bodies;
+
+  bodies.push_back(system.sun);
+  bodies.push_back(system.relay);
+
+  for(Planet* planet : system.planets) {
+    bodies.push_back(planet);
+  }
+
+  // Connect planets between them
+  seed({SYSTEM, id, CONNECTION});
+  int start = in_range(0, system.planets.size());
+
+  ConnectionGenerator connection_generator(bodies, system.planets, start);
 
   while(!connection_generator.is_finished()) {
     // Get a connected planet randomly
@@ -229,5 +282,4 @@ unsigned int UniverseGenerator::in_range(unsigned int min, unsigned int max) {
 
   return (unsigned int)(min + random_() % diff);
 }
-
 }
