@@ -1,10 +1,10 @@
 #include "send_fleet.hpp"
 
 namespace space_wars {
+namespace action {
 
 SendFleet::SendFleet(int origin_id, int destination_id, int num_ships) :
-    origin_id_(origin_id), destination_id_(destination_id), num_ships_(num_ships)
-{
+    origin_id_(origin_id), destination_id_(destination_id), num_ships_(num_ships) {
 
 }
 
@@ -18,7 +18,8 @@ std::string SendFleet::str() const {
 
 void SendFleet::PrintJSON(std::ostream& stream) const {
   stream << "{\"type\":\"send_fleet\",\"origin\":" << origin_id_ << ",\"destination\":" << destination_id_ <<
-      ",\"ships\":" << num_ships_ << "}";
+  ",\"ships\":" << num_ships_ << "}";
 }
 
+}
 }

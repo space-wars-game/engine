@@ -10,8 +10,13 @@ class Relay : public CelestialBody {
   typedef CelestialBody super;
 
   static unsigned int RADIUS;
+  static unsigned int MIN_NUM_CONNECTIONS;
+  static unsigned int MAX_NUM_CONNECTIONS;
 
-  Relay(unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
+  Relay();
+  Relay(unsigned int id, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
+
+  bool HasConnection(int relay_id) const;
 
   unsigned int id;
   std::vector<int> connections;

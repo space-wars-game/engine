@@ -40,6 +40,10 @@ unsigned int Planet::ship_rate() const {
   return radius / 4;
 }
 
+bool Planet::CanSendFleet(int player_id, int num_ships) const {
+  return owner == player_id and ships >= num_ships;
+}
+
 bool Planet::HasConnection(int planet_id) const {
   for(int connection : connections) {
     if(planet_id == connection) {

@@ -27,6 +27,7 @@ class Planet : public CelestialBody {
   bool is_owned() const;
   unsigned int ship_rate() const;
   bool HasConnection(int planet_id) const;
+  bool CanSendFleet(int player_id, int num_ships) const;
   bool has_relay() const;
 
   void GenerateShips(float delta);

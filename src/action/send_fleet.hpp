@@ -3,6 +3,7 @@
 #include "../action.hpp"
 
 namespace space_wars {
+namespace action {
 
 class SendFleet : public Action {
  public:
@@ -21,4 +22,5 @@ class SendFleet : public Action {
   int num_ships_;
 };
 
+}
 }

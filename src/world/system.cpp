@@ -5,6 +5,7 @@ namespace space_wars {
 
 unsigned int System::MIN_SIZE = 6;
 unsigned int System::MAX_SIZE = 12;
+unsigned int System::HOME_NUM_CONNECTIONS = 2;
 
 System::System() {
 

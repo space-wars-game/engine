@@ -43,13 +43,15 @@ void Universe::Update(float delta) {
 }
 
 void Universe::MoveFleet(int player_id, int origin_id, int destination_id, int num_ships) {
-  if(origin_id < 0 or origin_id >= planets.size() or destination_id < 0 or destination_id >= planets.size()) {
+  if(origin_id < 0 or origin_id >= planets.size() or destination_id < 0 or destination_id >= planets.size() or
+      num_ships < 0)
+  {
     return;
   }
 
   Planet& origin = *(planets[origin_id]);
 
-  if(origin.owner != player_id or origin.ships < num_ships or !origin.HasConnection(destination_id)) {
+  if(!origin.CanSendFleet(player_id, num_ships) or !origin.HasConnection(destination_id)) {
     return;
   }
 
@@ -58,6 +60,33 @@ void Universe::MoveFleet(int player_id, int origin_id, int destination_id, int n
   Planet& destination = *(planets[destination_id]);
 
   fleets.push_back(new Fleet(player_id, num_ships, destination_id, origin.distance(destination)));
+}
+
+void Universe::SendFleetThroughRelay(int player_id, int origin_id, int origin_relay, int destination_relay,
+                                     int destination_id, int num_ships) {
+  if(origin_id < 0 or origin_id >= planets.size() or destination_id < 0 or destination_id >= planets.size() or
+      origin_relay < 0 or origin_relay >= relays.size() or destination_relay < 0 or
+      destination_relay >= relays.size() or num_ships < 0)
+  {
+    return;
+  }
+
+  Planet& origin = *(planets[origin_id]);
+  Planet& destination = *(planets[destination_id]);
+  Relay& relay_origin = *(relays[origin_relay]);
+
+  if(!origin.CanSendFleet(player_id, num_ships) or origin.relay != origin_relay or
+      destination.relay != destination_relay or !relay_origin.HasConnection(destination_relay))
+  {
+    return;
+  }
+
+  origin.ships -= num_ships;
+
+  Relay& relay_destination = *(relays[destination_relay]);
+
+  fleets.push_back(new Fleet(player_id, num_ships, destination_id, origin.distance(relay_origin) +
+      destination.distance(relay_destination)));
 }
 
 void Universe::PrintStructure(std::ostream& stream) const {
@@ -86,6 +115,10 @@ const std::vector<int>& Universe::owned_planets(int player_id) const {
 
 const Planet& Universe::planet(int planet_id) const {
   return *planets[planet_id];
+}
+
+const Relay& Universe::relay(int relay_id) const {
+  return *relays[relay_id];
 }
 
 }

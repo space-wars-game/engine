@@ -12,6 +12,7 @@ class System {
  public:
   static unsigned int MIN_SIZE;
   static unsigned int MAX_SIZE;
+  static unsigned int HOME_NUM_CONNECTIONS;
 
   System();
   ~System();

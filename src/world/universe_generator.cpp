@@ -1,4 +1,5 @@
 #include "universe_generator.hpp"
+#include <queue>
 
 namespace space_wars {
 
@@ -109,14 +110,17 @@ Universe* UniverseGenerator::Generate(int num_players, int neutral_systems_ratio
   Universe* universe = new Universe;
 
   for(int i = 0; i < num_players * neutral_systems_ratio; ++i) {
-    System* system = (i % 3 == 0) ? GenerateHomeSystem(i, i / neutral_systems_ratio) : GenerateSystem(i);
+    System* system = (i % neutral_systems_ratio == 0) ? GenerateHomeSystem(i, i / neutral_systems_ratio) : GenerateSystem(i);
 
     for(Planet* planet : system->planets) {
       universe->planets.push_back(planet);
     }
 
     universe->systems.push_back(system);
+    universe->relays.push_back(system->relay);
   }
+
+  ConnectSystems(*universe);
 
   return universe;
 }
@@ -138,7 +142,7 @@ System* UniverseGenerator::GenerateHomeSystem(int id, int player_id) {
   System* system = new System;
 
   system->sun = GenerateSun(id);
-  system->relay = new Relay(100, 80, 90);
+  system->relay = new Relay(id, 100, 80, 90);
 
   Planet* home = new Planet(Planet::MAX_RADIUS, 100, 80, 0);
   home->owner = player_id;
@@ -166,7 +170,7 @@ Relay* UniverseGenerator::GenerateRelay(int system, Sun* sun) {
   seed({SYSTEM, system, RELAY, ORBIT_POSITION});
   unsigned int orbit_position = in_range(0, 360);
 
-  return new Relay(distance_x, distance_y, orbit_position);
+  return new Relay(system, distance_x, distance_y, orbit_position);
 }
 
 std::vector<Planet*> UniverseGenerator::GeneratePlanets(int system, CelestialBody* previous) {
@@ -197,6 +201,79 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
   unsigned int orbit_position = in_range(0, 360);
 
   return new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
+}
+
+void UniverseGenerator::ConnectSystems(Universe& universe) {
+  std::vector<System*> home_systems;
+  std::vector<System*> neutral_systems;
+
+  for(System* system : universe.systems) {
+    if(system->planets.size() > 1) {
+      neutral_systems.push_back(system);
+    } else {
+      home_systems.push_back(system);
+    }
+  }
+
+  std::queue<System*> connected;
+  std::queue<System*> edges;
+  std::vector<System*> disconnected(neutral_systems);
+
+  seed({SYSTEM, CONNECTION});
+  int start = in_range(0, disconnected.size());
+
+  edges.push(disconnected[start]);
+  disconnected.erase(disconnected.begin() + start);
+
+  // Connect neutral systems
+  while(!disconnected.empty()) {
+    System* origin = edges.front();
+    edges.pop();
+
+    int num_connections = in_range(Relay::MIN_NUM_CONNECTIONS, std::min(Relay::MAX_NUM_CONNECTIONS, (unsigned int)disconnected.size()));
+
+    for(int i = 0; i < num_connections; ++i) {
+      int d = in_range(0, disconnected.size());
+
+      System* destination = disconnected[d];
+
+      origin->relay->connections.push_back(destination->relay->id);
+
+      edges.push(destination);
+      disconnected.erase(disconnected.begin() + d);
+    }
+
+    connected.push(origin);
+  }
+
+  // Connect remaining edges
+  while(!edges.empty()) {
+    System* edge = edges.front();
+    edges.pop();
+
+    int num_connections = in_range(Relay::MIN_NUM_CONNECTIONS, std::min(Relay::MAX_NUM_CONNECTIONS, (unsigned int)connected.size()));
+
+    for(int i = 0; i < num_connections; ++i) {
+      System* connection = connected.front();
+      connected.pop();
+
+      edge->relay->connections.push_back(connection->relay->id);
+    }
+
+    connected.push(edge);
+  }
+
+  // Connect home systems to neutral systems
+  for(System* home : home_systems) {
+    for(unsigned int i = 0; i < System::HOME_NUM_CONNECTIONS; ++i) {
+      int d = in_range(0, neutral_systems.size());
+      System* destination = neutral_systems[d];
+
+      home->relay->connections.push_back(destination->relay->id);
+
+      neutral_systems.erase(neutral_systems.begin() + d);
+    }
+  }
 }
 
 void UniverseGenerator::ConnectRelayToPlanets(int id, System& system) {

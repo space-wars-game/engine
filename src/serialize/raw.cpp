@@ -19,11 +19,28 @@ void Structure(const std::vector<System*>& systems, std::ostream& stream) {
 
 void Structure(const System& system, std::ostream& stream) {
   Structure(*system.sun, stream);
+  Structure(*system.relay, stream);
   Structure(system.planets, stream);
 }
 
 void Structure(const Sun& sun, std::ostream& stream) {
   stream << sun.radius << std::endl;
+}
+
+void Structure(const Relay& relay, std::ostream& stream) {
+  stream << relay.id << ' ' << relay.x << ' ' << relay.y << ' ' << relay.connections.size();
+
+  for(int connection : relay.connections) {
+    stream << ' ' << connection;
+  }
+
+  stream << ' ' << relay.planets.size();
+
+  for(int planet : relay.planets) {
+    stream << ' ' << planet;
+  }
+
+  stream << std::endl;
 }
 
 void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
@@ -35,7 +52,8 @@ void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
 }
 
 void Structure(const Planet& planet, std::ostream& stream) {
-  stream << planet.id << ' ' << planet.radius << ' ' << planet.x << ' ' << planet.y << ' ' << planet.connections.size();
+  stream << planet.id << ' ' << planet.radius << ' ' << planet.x << ' ' << planet.y << ' '  << planet.relay << ' '
+    << planet.connections.size();
 
   for(int connection : planet.connections) {
     stream << ' ' << connection;

@@ -24,8 +24,12 @@ void Structure(std::vector<System*>& systems, std::istream& stream, Universe& un
 
 void Structure(System& system, std::istream& stream, Universe& universe) {
   system.sun = new Sun;
-
   Structure(*system.sun, stream);
+
+  system.relay = new Relay;
+  Structure(*system.relay, stream);
+  universe.relays.push_back(system.relay);
+
   Structure(system.planets, stream, universe);
 }
 
@@ -34,6 +38,30 @@ void Structure(Sun& sun, std::istream& stream) {
 
   // TODO: Sun type (un)serialization
   sun.type = Sun::G;
+}
+
+void Structure(Relay& relay, std::istream& stream) {
+  int num_connections;
+
+  stream >> relay.id >> relay.x >> relay.y >> num_connections;
+
+  for(int i = 0; i < num_connections; ++i) {
+    int connection;
+    stream >> connection;
+
+    relay.connections.push_back(connection);
+  }
+
+  int num_planets;
+
+  stream >> num_planets;
+
+  for(int i = 0; i < num_planets; ++i) {
+    int planet;
+    stream >> planet;
+
+    relay.planets.push_back(planet);
+  }
 }
 
 void Structure(std::vector<Planet*>& planets, std::istream& stream, Universe& universe) {
@@ -55,7 +83,7 @@ void Structure(std::vector<Planet*>& planets, std::istream& stream, Universe& un
 void Structure(Planet& planet, std::istream& stream) {
   int num_connections;
 
-  stream >> planet.id >> planet.radius >> planet.x >> planet.y >> num_connections;
+  stream >> planet.id >> planet.radius >> planet.x >> planet.y >> planet.relay >> num_connections;
 
   for(int i = 0; i < num_connections; ++i) {
     int connection_id;

@@ -7,8 +7,8 @@ set(SOURCE_FILES
         src/space_wars.cpp
 
         src/action.cpp
-        src/action/move.cpp
         src/action/send_fleet.cpp
+        src/action/send_fleet_through_relay.cpp
 
         src/world/universe_generator.cpp
 
