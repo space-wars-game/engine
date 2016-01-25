@@ -7,7 +7,7 @@ namespace {
 
 enum SeedTypes {
   SYSTEM, SUN, PLANET, TYPE, RADIUS, SIZE, X, Y, DISTANCE_X, DISTANCE_Y, ORBIT_POSITION, RELAY,
-  CONNECTION
+  CONNECTION, ROTATION_DIRECTION, ROTATION_SPEED
 };
 
 bool connection_intersects(const CelestialBody* c, const CelestialBody* d, const std::vector<CelestialBody*> bodies) {
@@ -147,6 +147,8 @@ System* UniverseGenerator::GenerateHomeSystem(int id, int player_id) {
   Planet* home = new Planet(Planet::MAX_RADIUS, 100, 80, 0);
   home->owner = player_id;
 
+  SetPlanetAttributes(id, *home);
+
   system->planets.push_back(home);
 
   ConnectRelayToPlanets(id, *system);
@@ -200,7 +202,22 @@ Planet* UniverseGenerator::GeneratePlanet(int system, int id, CelestialBody* pre
   seed({SYSTEM, system, PLANET, id, ORBIT_POSITION});
   unsigned int orbit_position = in_range(0, 360);
 
-  return new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
+  Planet* planet = new Planet(radius, previous->orbit_major + distance_x, previous->orbit_minor + distance_y, orbit_position);
+
+  SetPlanetAttributes(system, *planet);
+
+  return planet;
+}
+
+void UniverseGenerator::SetPlanetAttributes(int system, Planet& planet) {
+  seed({SYSTEM, system, PLANET, planet.id, TYPE});
+  planet.type = in_range(0, Planet::NUM_TYPES);
+
+  seed({SYSTEM, system, PLANET, planet.id, ROTATION_DIRECTION});
+  planet.rotation_direction = (in_range(0, 100) < Planet::PROB_ROTATION_CLOCKWISE) ? -1 : 1;
+
+  seed({SYSTEM, system, PLANET, planet.id, ROTATION_SPEED});
+  planet.rotation_speed = in_range(Planet::MIN_ROTATION_SPEED, Planet::MAX_ROTATION_SPEED);
 }
 
 void UniverseGenerator::ConnectSystems(Universe& universe) {
@@ -363,4 +380,5 @@ unsigned int UniverseGenerator::in_range(unsigned int min, unsigned int max) {
 
   return (unsigned int)(min + random_() % diff);
 }
+
 }

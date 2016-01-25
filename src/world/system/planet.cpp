@@ -21,13 +21,18 @@ unsigned int Planet::MAX_DISTANCE_Y = 7;
 unsigned int Planet::MIN_NUM_CONNECTIONS = 1;
 unsigned int Planet::MAX_NUM_CONNECTIONS = 5;
 
+unsigned int Planet::NUM_TYPES = 17;
+unsigned int Planet::PROB_ROTATION_CLOCKWISE = 10;
+unsigned int Planet::MIN_ROTATION_SPEED = 1;
+unsigned int Planet::MAX_ROTATION_SPEED = 5;
+
 Planet::Planet() {
 
 }
 
 Planet::Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position)
     : super(radius, orbit_major, orbit_minor, orbit_position), id(NEXT_ID), owner(-1), ships(0), ships_accum(0.f),
-      relay(-1)
+      relay(-1), type(0), rotation_direction(1), rotation_speed(MIN_ROTATION_SPEED)
 {
   NEXT_ID++;
 }

@@ -18,6 +18,8 @@ class UniverseGenerator {
   std::vector<Planet*> GeneratePlanets(int system, CelestialBody* previous);
   Planet* GeneratePlanet(int system, int id, CelestialBody* previous);
 
+  void SetPlanetAttributes(int system, Planet& planet);
+
   void ConnectSystems(Universe& universe);
   void ConnectPlanets(int id, System& system);
   void ConnectRelayToPlanets(int id, System& system);

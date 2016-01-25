@@ -53,6 +53,7 @@ void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
 
 void Structure(const Planet& planet, std::ostream& stream) {
   stream << planet.id << ' ' << planet.radius << ' ' << planet.x << ' ' << planet.y << ' '  << planet.relay << ' '
+    << planet.type << ' ' << planet.rotation_direction << ' ' << planet.rotation_speed << ' '
     << planet.connections.size();
 
   for(int connection : planet.connections) {

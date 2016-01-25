@@ -93,6 +93,9 @@ void Structure(const std::vector<Planet*>& planets, std::ostream& stream) {
     stream << ATTR(x) << ":" << planet.x << "," << ATTR(y) << ":" << planet.y << ",";
     stream << ATTR(radius) << ":" << planet.radius << ",";
     stream << ATTR(relay) << ':' << planet.relay << ',';
+    stream << ATTR(type) << ':' << planet.type << ',';
+    stream << ATTR(rotation_direction) << ':' << planet.rotation_direction << ',';
+    stream << ATTR(rotation_speed) << ':' << planet.rotation_speed << ',';
     stream << ATTR(connections) << ":[";
 
     for(unsigned int j = 0; j < planet.connections.size(); ++j) {

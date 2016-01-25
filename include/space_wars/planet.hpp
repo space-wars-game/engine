@@ -21,6 +21,11 @@ class Planet : public CelestialBody {
   static unsigned int MIN_NUM_CONNECTIONS;
   static unsigned int MAX_NUM_CONNECTIONS;
 
+  static unsigned int NUM_TYPES;
+  static unsigned int PROB_ROTATION_CLOCKWISE;
+  static unsigned int MIN_ROTATION_SPEED;
+  static unsigned int MAX_ROTATION_SPEED;
+
   Planet();
   Planet(unsigned int radius, unsigned int orbit_major, unsigned int orbit_minor, unsigned int orbit_position);
 
@@ -38,6 +43,9 @@ class Planet : public CelestialBody {
   int relay;
   int owner;
   int ships;
+  unsigned int type;
+  int rotation_direction;
+  unsigned int rotation_speed;
 
  private:
   float ships_accum;

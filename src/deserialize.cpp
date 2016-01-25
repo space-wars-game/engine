@@ -83,7 +83,8 @@ void Structure(std::vector<Planet*>& planets, std::istream& stream, Universe& un
 void Structure(Planet& planet, std::istream& stream) {
   int num_connections;
 
-  stream >> planet.id >> planet.radius >> planet.x >> planet.y >> planet.relay >> num_connections;
+  stream >> planet.id >> planet.radius >> planet.x >> planet.y >> planet.relay >> planet.type >>
+      planet.rotation_direction >> planet.rotation_speed >> num_connections;
 
   for(int i = 0; i < num_connections; ++i) {
     int connection_id;
