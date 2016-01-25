@@ -12,7 +12,7 @@ SpaceWars::SpaceWars() {
 
 mmpg::World* SpaceWars::GenerateWorld() {
   UniverseGenerator generator((unsigned int) time(NULL));
-  return generator.Generate(2, 10);
+  return generator.Generate(100, 3);
 }
 
 
